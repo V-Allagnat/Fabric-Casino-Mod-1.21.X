@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "casinomod:block/chip_converter_front",
+
+    "down": "casinomod:block/chip_converter_under",
+    "up": "casinomod:block/chip_converter_top_flipped",
+    "north": "casinomod:block/chip_converter_front",
+    "south": "casinomod:block/chip_converter_back",
+    "west": "casinomod:block/chip_converter_side",
+    "east": "casinomod:block/chip_converter_side"
+  }
+}

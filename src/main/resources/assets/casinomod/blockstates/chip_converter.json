@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "casinomod:block/chip_converter" },
+    "facing=east":  { "model": "casinomod:block/chip_converter", "y": 90 },
+    "facing=south": { "model": "casinomod:block/chip_converter", "y": 180 },
+    "facing=west":  { "model": "casinomod:block/chip_converter", "y": 270 }
+  }
+}
