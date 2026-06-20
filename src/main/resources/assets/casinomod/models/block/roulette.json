@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle":"casinomod:block/roulette_top",
+
+    "down": "casinomod:block/roulette_bottom",
+    "up": "casinomod:block/roulette_top",
+    "north": "casinomod:block/roulette_side",
+    "south": "casinomod:block/roulette_side",
+    "west": "casinomod:block/roulette_side",
+    "east": "casinomod:block/roulette_side"
+  }
+}

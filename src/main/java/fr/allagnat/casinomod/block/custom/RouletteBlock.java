@@ -17,6 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class RouletteBlock extends BlockWithEntity implements BlockEntityProvider {
 
     public static final MapCodec<RouletteBlock> CODEC = RouletteBlock.createCodec(RouletteBlock::new);
@@ -55,6 +57,17 @@ public class RouletteBlock extends BlockWithEntity implements BlockEntityProvide
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof RouletteBlockEntity rouletteBlockEntity && !world.isClient()) {
+            if (rouletteBlockEntity.getCurrentUserUUID() != null) {
+                // another player is currently using the interface
+                return ItemActionResult.SUCCESS;
+            }
+            // lock screen so no other players can use it
+            UUID playerUUID = player.getUuid();
+            if (playerUUID == null) {
+                return ItemActionResult.SUCCESS;
+            }
+            rouletteBlockEntity.setCurrentUserUUID(playerUUID);
+
             player.openHandledScreen(rouletteBlockEntity);
         }
         return ItemActionResult.SUCCESS;

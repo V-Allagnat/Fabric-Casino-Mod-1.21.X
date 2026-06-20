@@ -22,10 +22,13 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class BlackjackTableBlockEntity extends BlockEntity implements ImplementedInventory, ExtendedScreenHandlerFactory<BlockPos> {
 
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
     private float rotation = 0;
+    private UUID currentUserUUID = null;
 
     public BlackjackTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BLACKJACK_TABLE_BE, pos, state);
@@ -81,5 +84,13 @@ public class BlackjackTableBlockEntity extends BlockEntity implements Implemente
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createNbt(registryLookup);
+    }
+
+    public UUID getCurrentUserUUID() {
+        return currentUserUUID;
+    }
+
+    public void setCurrentUserUUID(UUID playerUUID) {
+        this.currentUserUUID = playerUUID;
     }
 }

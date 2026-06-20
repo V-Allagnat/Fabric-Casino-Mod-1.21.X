@@ -22,9 +22,13 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class ChipConverterBlockEntity extends BlockEntity implements ImplementedInventory, ExtendedScreenHandlerFactory<BlockPos> {
 
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
+    private UUID currentUserUUID = null;
+
 
     public ChipConverterBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CHIP_CONVERTER_BE, pos, state);
@@ -71,5 +75,13 @@ public class ChipConverterBlockEntity extends BlockEntity implements Implemented
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createNbt(registryLookup);
+    }
+
+    public UUID getCurrentUserUUID() {
+        return currentUserUUID;
+    }
+
+    public void setCurrentUserUUID(UUID playerUUID) {
+        this.currentUserUUID = playerUUID;
     }
 }

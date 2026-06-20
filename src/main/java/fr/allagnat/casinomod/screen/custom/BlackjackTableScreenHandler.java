@@ -1,5 +1,8 @@
 package fr.allagnat.casinomod.screen.custom;
 
+import fr.allagnat.casinomod.block.ModBlocks;
+import fr.allagnat.casinomod.block.entity.custom.BlackjackTableBlockEntity;
+import fr.allagnat.casinomod.block.entity.custom.RouletteBlockEntity;
 import fr.allagnat.casinomod.item.ModItems;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.util.BlackjackCards;
@@ -97,6 +100,16 @@ public class BlackjackTableScreenHandler extends ScreenHandler {
             }
         });
         addPlayerHotbar(playerInventory);
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        if (player.getWorld().getBlockEntity(entityPos) instanceof BlackjackTableBlockEntity blackjackTableBlockEntity) {
+            System.out.println("current user UUID: " + blackjackTableBlockEntity.getCurrentUserUUID());
+            blackjackTableBlockEntity.setCurrentUserUUID(null);
+            System.out.println("after closing interface: " + blackjackTableBlockEntity.getCurrentUserUUID());
+        }
+        super.onClosed(player);
     }
 
     public void setAndGiveReward(int value) {
@@ -331,7 +344,7 @@ public class BlackjackTableScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
+        return player.getWorld().getBlockState(entityPos).isOf(ModBlocks.BLACKJACK_TABLE);
     }
 
     private void addPlayerHotbar(PlayerInventory playerInventory) {

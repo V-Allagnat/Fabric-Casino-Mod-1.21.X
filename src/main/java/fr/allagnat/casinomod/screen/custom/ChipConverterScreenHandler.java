@@ -1,5 +1,7 @@
 package fr.allagnat.casinomod.screen.custom;
 
+import fr.allagnat.casinomod.block.ModBlocks;
+import fr.allagnat.casinomod.block.entity.custom.ChipConverterBlockEntity;
 import fr.allagnat.casinomod.item.ModItems;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.util.ModTags;
@@ -50,6 +52,14 @@ public class ChipConverterScreenHandler extends ScreenHandler {
         });
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        if (player.getWorld().getBlockEntity(entityPos) instanceof ChipConverterBlockEntity chipConverterBlockEntity) {
+            chipConverterBlockEntity.setCurrentUserUUID(null);
+        }
+        super.onClosed(player);
     }
 
     public PlayerEntity getPlayer() {
@@ -174,7 +184,7 @@ public class ChipConverterScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
+        return player.getWorld().getBlockState(entityPos).isOf(ModBlocks.CHIP_CONVERTER);
     }
 
     private void addPlayerInventory(PlayerInventory playerInventory) {

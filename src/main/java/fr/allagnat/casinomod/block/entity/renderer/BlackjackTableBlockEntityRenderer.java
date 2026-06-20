@@ -17,9 +17,7 @@ import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 
 public class BlackjackTableBlockEntityRenderer implements BlockEntityRenderer<BlackjackTableBlockEntity> {
-    public BlackjackTableBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
-        // FIXME empty ????
-    }
+    public BlackjackTableBlockEntityRenderer(BlockEntityRendererFactory.Context context) {}
 
     @Override
     public void render(BlackjackTableBlockEntity entity, float tickDelta, MatrixStack matrices,

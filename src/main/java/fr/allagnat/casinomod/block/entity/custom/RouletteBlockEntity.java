@@ -22,17 +22,29 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class RouletteBlockEntity extends BlockEntity implements ImplementedInventory, ExtendedScreenHandlerFactory<BlockPos> {
 
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
+    private float rotation = 0;
+    private UUID currentUserUUID = null;
 
     public RouletteBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.CHIP_CONVERTER_BE, pos, state);
+        super(ModBlockEntities.ROULETTE_BE, pos, state);
     }
 
     @Override
     public DefaultedList<ItemStack> getItems() {
         return inventory;
+    }
+
+    public float getRenderingRotation() {
+        rotation += 0.5f;
+        if (rotation >= 360) {
+            rotation = 0;
+        }
+        return rotation;
     }
 
     @Override
@@ -71,5 +83,13 @@ public class RouletteBlockEntity extends BlockEntity implements ImplementedInven
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createNbt(registryLookup);
+    }
+
+    public UUID getCurrentUserUUID() {
+        return currentUserUUID;
+    }
+
+    public void setCurrentUserUUID(UUID playerUUID) {
+        currentUserUUID = playerUUID;
     }
 }

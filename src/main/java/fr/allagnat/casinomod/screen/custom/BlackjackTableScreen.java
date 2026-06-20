@@ -2,6 +2,7 @@ package fr.allagnat.casinomod.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.allagnat.casinomod.CasinoMod;
+import fr.allagnat.casinomod.block.entity.custom.BlackjackTableBlockEntity;
 import fr.allagnat.casinomod.util.BlackjackCards;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.Block;
@@ -368,6 +369,11 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+        try {
+            System.out.println("UUID while open: " + ((BlackjackTableBlockEntity) handler.getPlayer().getWorld().getBlockEntity(handler.getEntityPos())).getCurrentUserUUID());
+        } catch (NullPointerException e) {
+            System.out.println("nullptr...");
+        }
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, GUI_TEXTURE);

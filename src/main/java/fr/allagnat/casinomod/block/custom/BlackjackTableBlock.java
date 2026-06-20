@@ -6,8 +6,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.ItemScatterer;
@@ -18,6 +16,8 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public class BlackjackTableBlock extends BlockWithEntity implements BlockEntityProvider {
 
@@ -74,19 +74,24 @@ public class BlackjackTableBlock extends BlockWithEntity implements BlockEntityP
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos,
                                              PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.getBlockEntity(pos) instanceof BlackjackTableBlockEntity blackjackTableBlockEntity) {
-            if (!player.isSneaking() && !world.isClient()) {
-                player.openHandledScreen(blackjackTableBlockEntity);
-
-            } else if (player.isSneaking() && stack.isEmpty()) {
-                world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 2f, 1f);
-                ItemStack stackInTable = blackjackTableBlockEntity.getStack(0);
-                player.setStackInHand(Hand.MAIN_HAND, stackInTable);
-                blackjackTableBlockEntity.clear();
-
-                blackjackTableBlockEntity.markDirty();
-                world.updateListeners(pos, state, state, 0);
+        if (world.getBlockEntity(pos) instanceof BlackjackTableBlockEntity blackjackTableBlockEntity && !world.isClient()) {
+            if (blackjackTableBlockEntity.getCurrentUserUUID() != null) {
+                // another player is currently using the interface
+                System.out.println("user " + blackjackTableBlockEntity.getCurrentUserUUID() + " is already using the interface");
+                return ItemActionResult.SUCCESS;
             }
+            // lock screen so no other players can use it
+            UUID playerUUID = player.getUuid();
+            if (playerUUID == null) {
+                System.out.println("null uuid while opening...");
+                return ItemActionResult.SUCCESS;
+            }
+            System.out.println("setting uuid " + playerUUID + "...");
+            blackjackTableBlockEntity.setCurrentUserUUID(playerUUID);
+            System.out.println("uuid set to " + blackjackTableBlockEntity.getCurrentUserUUID() + "!");
+            System.out.println("opening screen...");
+
+            player.openHandledScreen(blackjackTableBlockEntity);
         }
         return ItemActionResult.SUCCESS;
     }

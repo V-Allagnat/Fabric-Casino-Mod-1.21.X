@@ -1,5 +1,7 @@
 package fr.allagnat.casinomod.screen.custom;
 
+import fr.allagnat.casinomod.block.ModBlocks;
+import fr.allagnat.casinomod.block.entity.custom.RouletteBlockEntity;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.util.ModTags;
 import net.minecraft.block.entity.BlockEntity;
@@ -14,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class RouletteScreenHandler extends ScreenHandler {
     private final Inventory inventory;
+    private final BlockPos entityPos;
 
     public RouletteScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
         this(syncId, playerInventory, playerInventory.player.getWorld().getBlockEntity(pos));
@@ -22,8 +25,9 @@ public class RouletteScreenHandler extends ScreenHandler {
     public RouletteScreenHandler(int syncId, PlayerInventory playerInventory, BlockEntity blockEntity) {
         super(ModScreenHandlers.ROULETTE_SCREEN_HANDLER, syncId);
         this.inventory = (Inventory) blockEntity;
+        this.entityPos = blockEntity.getPos();
 
-        this.addSlot(new Slot(inventory, 0, 8, 35) {
+        this.addSlot(new Slot(inventory, 0, 22, 26) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 if (stack.isIn(ModTags.Items.CHIP_ITEMS)) {
@@ -36,9 +40,23 @@ public class RouletteScreenHandler extends ScreenHandler {
     }
 
     private void addPlayerHotbar(PlayerInventory playerInventory) {
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        this.addSlot(new Slot(playerInventory, 0, 6, 143 ));
+        this.addSlot(new Slot(playerInventory, 1, 6 + 18, 143 ));
+        this.addSlot(new Slot(playerInventory, 2, 6 + 2 * 18 + 1, 143 ));
+        this.addSlot(new Slot(playerInventory, 3, 6 + 3 * 18 + 2, 143 ));
+        this.addSlot(new Slot(playerInventory, 4, 6 + 4 * 18 + 2, 143 ));
+        this.addSlot(new Slot(playerInventory, 5, 6 + 5 * 18 + 3, 143 ));
+        this.addSlot(new Slot(playerInventory, 6, 6 + 6 * 18 + 3, 143 ));
+        this.addSlot(new Slot(playerInventory, 7, 6 + 7 * 18 + 4, 143 ));
+        this.addSlot(new Slot(playerInventory, 8, 6 + 8 * 18 + 4, 143 ));
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        if (player.getWorld().getBlockEntity(entityPos) instanceof RouletteBlockEntity rouletteBlockEntity) {
+            rouletteBlockEntity.setCurrentUserUUID(null);
         }
+        super.onClosed(player);
     }
 
     @Override
@@ -67,6 +85,6 @@ public class RouletteScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
+        return player.getWorld().getBlockState(entityPos).isOf(ModBlocks.ROULETTE);
     }
 }
