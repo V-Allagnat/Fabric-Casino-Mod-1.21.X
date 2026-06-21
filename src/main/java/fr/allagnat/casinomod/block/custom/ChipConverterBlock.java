@@ -69,7 +69,8 @@ public class ChipConverterBlock extends BlockWithEntity implements BlockEntityPr
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof ChipConverterBlockEntity chipConverterBlockEntity && !world.isClient()) {
-            if (chipConverterBlockEntity.getCurrentUserUUID() != null) {
+            UUID currentUser = chipConverterBlockEntity.getCurrentUserUUID();
+            if (currentUser != null && !currentUser.equals(player.getUuid())) {
                 // another player is currently using the interface
                 return ItemActionResult.SUCCESS;
             }

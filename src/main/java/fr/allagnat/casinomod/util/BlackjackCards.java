@@ -150,7 +150,6 @@ public class BlackjackCards {
     public Pair<String, Integer> drawCard() {
         if (cardsList.isEmpty()) {
             resetCards();
-            // return new Pair<>("No cards left", 999);
         }
         Pair<String, Integer> card = cardsList.get(random.nextInt(cardsList.size()));
         cardsList.remove(card);

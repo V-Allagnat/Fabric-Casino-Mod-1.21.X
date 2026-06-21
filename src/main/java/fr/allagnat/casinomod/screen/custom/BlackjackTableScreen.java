@@ -2,7 +2,6 @@ package fr.allagnat.casinomod.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.allagnat.casinomod.CasinoMod;
-import fr.allagnat.casinomod.block.entity.custom.BlackjackTableBlockEntity;
 import fr.allagnat.casinomod.util.BlackjackCards;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.Block;
@@ -37,11 +36,6 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
         Pair<String, Integer> card = handler.getCards().drawCard();
         handler.addToScore(card);
         handler.addCardToDraw(card.getLeft());
-
-//        handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.hit",
-//                handler.getFormatted(card.getLeft()),
-//                "§a" + handler.currentPoints + "§r"
-//        ));
 
         if (handler.currentPoints > 21) {
             handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.bust"));
@@ -107,9 +101,6 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
 
     private final ButtonWidget button_double = ButtonWidget.builder(Text.translatable("display.casinomod.blackjack_table.double"), button -> {
-                System.out.println("in slot: " + handler.slots.getFirst().getStack().getItem());
-                System.out.println("type: " + handler.chipType);
-
                 if (handler.slots.getFirst().getStack().getItem() != handler.chipType) {
                     handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.double_down_different_chips"));
                     return;
@@ -211,13 +202,9 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
     private final ButtonWidget button_bet1 = ButtonWidget.builder(Text.translatable("display.casinomod.blackjack_table.bet1"), button -> {
                 if (handler.currentBet == handler.slots.getFirst().getStack().getCount()) {
-//                    handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.max_bet"));
                     return;
                 }
                 handler.currentBet++;
-//                handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.bet1",
-//                        "§a" + handler.currentBet + "§r"
-//                ));
     }).tooltip(Tooltip.of(Text.translatable("display.casinomod.blackjack_table.bet1_tooltip")))
             .build();
     private boolean button_bet1_active = true;
@@ -226,15 +213,10 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
     private final ButtonWidget button_bet5 = ButtonWidget.builder(Text.translatable("display.casinomod.blackjack_table.bet5"), button -> {
                 if (handler.currentBet == handler.slots.getFirst().getStack().getCount()) {
-//                    handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.max_bet"));
                     return;
                 }
                 int toAdd = Math.min(handler.slots.getFirst().getStack().getCount() - handler.currentBet, 5);
                 handler.currentBet += toAdd;
-//                handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.bet5",
-//                        "§a" + toAdd + "§r",
-//                        "§a" + handler.currentBet + "§r"
-//                ));
     }).tooltip(Tooltip.of(Text.translatable("display.casinomod.blackjack_table.bet5_tooltip")))
             .build();
     private boolean button_bet5_active = true;
@@ -243,13 +225,9 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
     private final ButtonWidget button_allin = ButtonWidget.builder(Text.translatable("display.casinomod.blackjack_table.allin"), button -> {
                 if (handler.slots.getFirst().getStack().isEmpty() || handler.slots.getFirst().getStack().getCount() == handler.currentBet) {
-//                    handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.max_bet"));
                     return;
                 }
                 handler.currentBet = handler.slots.getFirst().getStack().getCount();
-//                handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.allin",
-//                        "§a" + handler.currentBet + "§r"
-//                ));
     }).tooltip(Tooltip.of(Text.translatable("display.casinomod.blackjack_table.allin_tooltip")))
             .build();
     private boolean button_allin_active = true;
@@ -258,7 +236,6 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
     private final ButtonWidget button_reset = ButtonWidget.builder(Text.translatable("display.casinomod.blackjack_table.reset"), button -> {
                 handler.currentBet = 0;
-//                handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.reset"));
     }).tooltip(Tooltip.of(Text.translatable("display.casinomod.blackjack_table.reset_tooltip")))
             .build();
     private boolean button_reset_active = true;
@@ -369,11 +346,6 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        try {
-            System.out.println("UUID while open: " + ((BlackjackTableBlockEntity) handler.getPlayer().getWorld().getBlockEntity(handler.getEntityPos())).getCurrentUserUUID());
-        } catch (NullPointerException e) {
-            System.out.println("nullptr...");
-        }
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, GUI_TEXTURE);

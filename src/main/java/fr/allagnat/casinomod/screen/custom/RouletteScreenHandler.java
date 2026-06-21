@@ -2,6 +2,7 @@ package fr.allagnat.casinomod.screen.custom;
 
 import fr.allagnat.casinomod.block.ModBlocks;
 import fr.allagnat.casinomod.block.entity.custom.RouletteBlockEntity;
+import fr.allagnat.casinomod.item.ModItems;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.util.ModTags;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -9,9 +10,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
@@ -27,6 +30,7 @@ public class RouletteScreenHandler extends ScreenHandler {
     public int totalBet = 0;
     public Map<String, ItemStack> betMap;
     public String lastRoll = null;
+    public Pair<Integer, Item> lastGain = null;
 
     public static Map<Integer, String> LOOKUP = new HashMap<>();
     static {
@@ -118,6 +122,44 @@ public class RouletteScreenHandler extends ScreenHandler {
 
     public boolean isRed(int n) {
         return List.of(1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36).contains(n);
+    }
+
+    public void updateLastGain(String key, int multiplier) {
+        if (betMap.get(key) == null) {
+            return;
+        }
+        if (lastGain == null) {
+            lastGain = new Pair<>(-1 * totalBet, betMap.get(key).getItem());
+        }
+        lastGain.setLeft(lastGain.getLeft() + betMap.get(key).getCount() * multiplier);
+    }
+
+    public int getValue(Item chipItem) {
+        if (chipItem == ModItems.CHIP_1) {
+            return 1;
+        }
+        if (chipItem == ModItems.CHIP_5) {
+            return 5;
+        }
+        if (chipItem == ModItems.CHIP_10) {
+            return 10;
+        }
+        if (chipItem == ModItems.CHIP_25) {
+            return 25;
+        }
+        if (chipItem == ModItems.CHIP_50) {
+            return 50;
+        }
+        if (chipItem == ModItems.CHIP_100) {
+            return 100;
+        }
+        if (chipItem == ModItems.CHIP_500) {
+            return 500;
+        }
+        if (chipItem == ModItems.CHIP_1000) {
+            return 1000;
+        }
+        return 0;
     }
 
     public void giveReward(String key, int multiplier) {

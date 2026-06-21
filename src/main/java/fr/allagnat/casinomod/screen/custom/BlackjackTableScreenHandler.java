@@ -2,7 +2,6 @@ package fr.allagnat.casinomod.screen.custom;
 
 import fr.allagnat.casinomod.block.ModBlocks;
 import fr.allagnat.casinomod.block.entity.custom.BlackjackTableBlockEntity;
-import fr.allagnat.casinomod.block.entity.custom.RouletteBlockEntity;
 import fr.allagnat.casinomod.item.ModItems;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.util.BlackjackCards;
@@ -104,10 +103,10 @@ public class BlackjackTableScreenHandler extends ScreenHandler {
 
     @Override
     public void onClosed(PlayerEntity player) {
-        if (player.getWorld().getBlockEntity(entityPos) instanceof BlackjackTableBlockEntity blackjackTableBlockEntity) {
-            System.out.println("current user UUID: " + blackjackTableBlockEntity.getCurrentUserUUID());
-            blackjackTableBlockEntity.setCurrentUserUUID(null);
-            System.out.println("after closing interface: " + blackjackTableBlockEntity.getCurrentUserUUID());
+        if (!player.getWorld().isClient()) {
+            if (player.getWorld().getBlockEntity(entityPos) instanceof BlackjackTableBlockEntity blackjackTableBlockEntity) {
+                blackjackTableBlockEntity.setCurrentUserUUID(null);
+            }
         }
         super.onClosed(player);
     }
@@ -175,7 +174,6 @@ public class BlackjackTableScreenHandler extends ScreenHandler {
     }
 
     public void playDealersTurn() {
-//        player.sendMessage(Text.translatable("message.casinomod.blackjack_table.dealers_turn"));
         StringBuilder drawnCards = new StringBuilder();
         revealHiddenCard();
         while (dealerPoints < 17) {
@@ -188,21 +186,12 @@ public class BlackjackTableScreenHandler extends ScreenHandler {
                 drawnCards.append("  ").append(getFormatted(card.getLeft()));
             }
         }
-//        if (!drawnCards.isEmpty()) {
-//            player.sendMessage(Text.literal(drawnCards.toString()));
-//        }
-//        player.sendMessage(Text.translatable("message.casinomod.blackjack_table.dealers_final_score",
-//                "§a" + dealerPoints + "§r"
-//        ));
     }
 
     public void revealHiddenCard() {
         if (dealerCardsToDraw.getFirst().getLeft().equals("?")) {
             dealerCardsToDraw.getFirst().setLeft(dealerHiddenCard.getLeft());
             addToDealerScore(dealerHiddenCard);
-//            player.sendMessage(Text.translatable("message.casinomod.blackjack_table.dealers_hidden_card",
-//                getFormatted(dealerHiddenCard.getLeft()), "§a" + dealerPoints + "§r"
-//            ));
         }
     }
 

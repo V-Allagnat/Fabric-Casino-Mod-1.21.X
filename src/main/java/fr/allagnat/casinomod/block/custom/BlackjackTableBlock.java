@@ -75,21 +75,17 @@ public class BlackjackTableBlock extends BlockWithEntity implements BlockEntityP
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos,
                                              PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof BlackjackTableBlockEntity blackjackTableBlockEntity && !world.isClient()) {
-            if (blackjackTableBlockEntity.getCurrentUserUUID() != null) {
+            UUID currentUser = blackjackTableBlockEntity.getCurrentUserUUID();
+            if (currentUser != null && !currentUser.equals(player.getUuid())) {
                 // another player is currently using the interface
-                System.out.println("user " + blackjackTableBlockEntity.getCurrentUserUUID() + " is already using the interface");
                 return ItemActionResult.SUCCESS;
             }
             // lock screen so no other players can use it
             UUID playerUUID = player.getUuid();
             if (playerUUID == null) {
-                System.out.println("null uuid while opening...");
                 return ItemActionResult.SUCCESS;
             }
-            System.out.println("setting uuid " + playerUUID + "...");
             blackjackTableBlockEntity.setCurrentUserUUID(playerUUID);
-            System.out.println("uuid set to " + blackjackTableBlockEntity.getCurrentUserUUID() + "!");
-            System.out.println("opening screen...");
 
             player.openHandledScreen(blackjackTableBlockEntity);
         }

@@ -2,7 +2,6 @@ package fr.allagnat.casinomod.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.allagnat.casinomod.CasinoMod;
-import fr.allagnat.casinomod.item.ModItems;
 import fr.allagnat.casinomod.screen.widget.CustomSoundButton;
 import fr.allagnat.casinomod.screen.widget.TransparentButton;
 import fr.allagnat.casinomod.sound.ModSounds;
@@ -14,10 +13,13 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -57,10 +59,14 @@ public class RouletteScreen extends HandledScreen<RouletteScreenHandler> {
         }
 
         // remove chips from the inventory slot
+        handler.lastGain = new Pair<>(-1 * handler.totalBet, handler.slots.getFirst().getStack().getItem());
         handler.slots.getFirst().getStack().decrement(handler.totalBet);
         ClientPlayNetworking.send(new StackDecrementPayload(handler.getEntityPos(), handler.totalBet));
 
         // roll
+        if (button instanceof CustomSoundButton customSoundButton) {
+            customSoundButton.getSoundManager().play(PositionedSoundInstance.master(ModSounds.ROULETTE_ROLL, 0.8f));
+        }
         int roll = new Random().nextInt(0, 37);
         handler.lastRoll = RouletteScreenHandler.LOOKUP.get(roll);
 
@@ -76,6 +82,7 @@ public class RouletteScreen extends HandledScreen<RouletteScreenHandler> {
 
         // zero
         if (roll == 0) {
+            handler.updateLastGain("0", 36);
             handler.giveReward("0", 36);
             handler.betMap = new HashMap<>();
             handler.totalBet = 0;
@@ -84,28 +91,36 @@ public class RouletteScreen extends HandledScreen<RouletteScreenHandler> {
 
         // thirds
         if (roll <= 12) {
+            handler.updateLastGain("1-12", 3);
             handler.giveReward("1-12", 3);
         } else if (roll <= 24) {
+            handler.updateLastGain("13-24", 3);
             handler.giveReward("13-24", 3);
         } else {
+            handler.updateLastGain("25-36", 3);
             handler.giveReward("25-36", 3);
         }
 
         // halves
         if (roll <= 18) {
+            handler.updateLastGain("1-18", 2);
             handler.giveReward("1-18", 2);
         } else {
+            handler.updateLastGain("19-36", 2);
             handler.giveReward("19-36", 2);
         }
 
         // colors
         if (handler.isRed(roll)) {
+            handler.updateLastGain("red", 2);
             handler.giveReward("red", 2);
         } else {
+            handler.updateLastGain("black", 2);
             handler.giveReward("black", 2);
         }
 
         // single number
+        handler.updateLastGain(String.valueOf(roll), 36);
         handler.giveReward(String.valueOf(roll), 36);
 
         handler.betMap = new HashMap<>();
@@ -115,7 +130,7 @@ public class RouletteScreen extends HandledScreen<RouletteScreenHandler> {
     private final ButtonWidget btnRoll = new CustomSoundButton(0, 0, 40, 16,
             Text.translatable("display.casinomod.roulette.button_roll"),
             roll,
-            ModSounds.ROULETTE_ROLL,
+            SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON,
             0.8f
     );
 
@@ -347,6 +362,22 @@ public class RouletteScreen extends HandledScreen<RouletteScreenHandler> {
                     Identifier.of(CasinoMod.MOD_ID, handler.lastRoll),
                     x + 140, y + 40, 0, 0, 0,
                     20, 20, 20, 20
+            );
+        }
+        if (handler.lastGain != null) {
+            String lastGainText = handler.lastGain.getLeft() < 0 ?
+                    "-" + Math.abs(handler.lastGain.getLeft()) * handler.getValue(handler.lastGain.getRight()) :
+                    "+" + Math.abs(handler.lastGain.getLeft()) * handler.getValue(handler.lastGain.getRight());
+            int color = handler.lastGain.getLeft() < 0 ? 0xFF0000 : 0x00FF00;
+
+            context.drawText(
+                    MinecraftClient.getInstance().textRenderer, "Last Gain: ",
+                    x + 7, y + 45, 0xFFFFFF, false
+            );
+
+            context.drawText(
+                    MinecraftClient.getInstance().textRenderer, lastGainText,
+                    x + 7, y + 55, color, false
             );
         }
     }

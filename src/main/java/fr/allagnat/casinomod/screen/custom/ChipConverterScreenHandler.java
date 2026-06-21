@@ -88,41 +88,6 @@ public class ChipConverterScreenHandler extends ScreenHandler {
         chipsToGive.replace(chipType, chipsToGive.get(chipType) + amount);
     }
 
-    public void convertAndAdd(int toRefund) {
-        while (toRefund >= 1000) {
-            toRefund -= 1000;
-            chipsToGive.replace(ModItems.CHIP_1000, chipsToGive.get(ModItems.CHIP_1000) + 1);
-        }
-        while (toRefund >= 500) {
-            toRefund -= 500;
-            chipsToGive.replace(ModItems.CHIP_500, chipsToGive.get(ModItems.CHIP_500) + 1);
-        }
-        while (toRefund >= 100) {
-            toRefund -= 100;
-            chipsToGive.replace(ModItems.CHIP_100, chipsToGive.get(ModItems.CHIP_100) + 1);
-        }
-        while (toRefund >= 50) {
-            toRefund -= 50;
-            chipsToGive.replace(ModItems.CHIP_50, chipsToGive.get(ModItems.CHIP_50) + 1);
-        }
-        while (toRefund >= 25) {
-            toRefund -= 25;
-            chipsToGive.replace(ModItems.CHIP_25, chipsToGive.get(ModItems.CHIP_25) + 1);
-        }
-        while (toRefund >= 10) {
-            toRefund -= 10;
-            chipsToGive.replace(ModItems.CHIP_10, chipsToGive.get(ModItems.CHIP_10) + 1);
-        }
-        while (toRefund >= 5) {
-            toRefund -= 5;
-            chipsToGive.replace(ModItems.CHIP_5, chipsToGive.get(ModItems.CHIP_5) + 1);
-        }
-        while (toRefund > 0) {
-            toRefund--;
-            chipsToGive.replace(ModItems.CHIP_1, chipsToGive.get(ModItems.CHIP_1) + 1);
-        }
-    }
-
     private void initializePlayerChips() {
         chipsToGive.clear();
         chipsToGive.put(ModItems.CHIP_1, 0);

@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 public class CustomSoundButton extends ButtonWidget {
     private final SoundEvent sound;
     private final float pitch;
+    private SoundManager soundManager;
 
     public CustomSoundButton(int x, int y, int width, int height,
                              Text message, PressAction onPress, SoundEvent soundEvent, float pitch) {
@@ -17,8 +18,13 @@ public class CustomSoundButton extends ButtonWidget {
         this.pitch = pitch;
     }
 
+    public SoundManager getSoundManager() {
+        return soundManager;
+    }
+
     @Override
     public void playDownSound(SoundManager soundManager) {
+        this.soundManager = soundManager;
         soundManager.play(PositionedSoundInstance.master(sound, pitch));
     }
 }

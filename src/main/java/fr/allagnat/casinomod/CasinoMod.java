@@ -40,9 +40,9 @@ public class CasinoMod implements ModInitializer {
 
 		// Server side stack decrementing
 		// Can also achieve this by scheduling a task on the server thread using .execute() like so:
-//		context.server().execute(() -> {
-//			blackjackTable.getStack(0).decrement(payload.amount());
-//		});
+		//		context.server().execute(() -> {
+		//			blackjackTable.getStack(0).decrement(payload.amount());
+		//		});
 		ServerPlayNetworking.registerGlobalReceiver(StackDecrementPayload.ID, (payload, context) -> {
 			if (context.player().getWorld().getBlockEntity(payload.blockPos()) instanceof BlackjackTableBlockEntity blackjackTable) {
 				blackjackTable.getStack(0).decrement(payload.amount());

@@ -57,7 +57,8 @@ public class RouletteBlock extends BlockWithEntity implements BlockEntityProvide
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof RouletteBlockEntity rouletteBlockEntity && !world.isClient()) {
-            if (rouletteBlockEntity.getCurrentUserUUID() != null) {
+            UUID currentUser = rouletteBlockEntity.getCurrentUserUUID();
+            if (currentUser != null && !currentUser.equals(player.getUuid())) {
                 // another player is currently using the interface
                 return ItemActionResult.SUCCESS;
             }
