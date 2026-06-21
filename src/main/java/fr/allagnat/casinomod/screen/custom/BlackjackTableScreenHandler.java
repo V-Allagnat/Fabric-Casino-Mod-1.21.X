@@ -113,7 +113,6 @@ public class BlackjackTableScreenHandler extends ScreenHandler {
     }
 
     public void setAndGiveReward(int value) {
-        System.out.println("setting value " + value);
         setPlayerReward(value);
         givePlayerReward();
     }

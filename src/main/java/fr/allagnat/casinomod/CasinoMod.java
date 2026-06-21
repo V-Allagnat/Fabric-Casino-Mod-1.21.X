@@ -4,11 +4,13 @@ import fr.allagnat.casinomod.block.ModBlocks;
 import fr.allagnat.casinomod.block.entity.ModBlockEntities;
 import fr.allagnat.casinomod.block.entity.custom.BlackjackTableBlockEntity;
 import fr.allagnat.casinomod.block.entity.custom.ChipConverterBlockEntity;
+import fr.allagnat.casinomod.block.entity.custom.RouletteBlockEntity;
 import fr.allagnat.casinomod.item.ModItemGroups;
 import fr.allagnat.casinomod.item.ModItems;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.screen.custom.InventoryAddPayload;
 import fr.allagnat.casinomod.screen.custom.StackDecrementPayload;
+import fr.allagnat.casinomod.sound.ModSounds;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -29,6 +31,7 @@ public class CasinoMod implements ModInitializer {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
 		ModBlockEntities.registerBlockEntities();
+		ModSounds.registerSounds();
 
 		ModScreenHandlers.registerScreenHandlers();
 
@@ -45,6 +48,8 @@ public class CasinoMod implements ModInitializer {
 				blackjackTable.getStack(0).decrement(payload.amount());
 			} else if (context.player().getWorld().getBlockEntity(payload.blockPos()) instanceof ChipConverterBlockEntity chipConverter) {
 				chipConverter.getStack(0).decrement(payload.amount());
+			} else if (context.player().getWorld().getBlockEntity(payload.blockPos()) instanceof RouletteBlockEntity roulette) {
+				roulette.getStack(0).decrement(payload.amount());
 			}
 		});
 

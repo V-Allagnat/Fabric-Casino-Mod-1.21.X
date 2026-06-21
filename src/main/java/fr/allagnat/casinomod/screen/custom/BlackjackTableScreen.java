@@ -268,7 +268,7 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
     private final ButtonWidget button_start = ButtonWidget.builder(Text.translatable("display.casinomod.blackjack_table.start_round"), button -> {
 
         // This line is here to prevent players from betting chips, then taking them away from the slot before starting.
-        handler.currentBet = Math.min(handler.currentBet,  handler.slots.getFirst().getStack().getCount());
+        handler.currentBet = Math.min(handler.currentBet, handler.slots.getFirst().getStack().getCount());
 
         if (handler.currentBet == 0) {
             handler.getPlayer().sendMessage(Text.translatable("message.casinomod.blackjack_table.start_fail"));

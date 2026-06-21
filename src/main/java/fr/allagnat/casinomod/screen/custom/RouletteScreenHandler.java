@@ -4,6 +4,7 @@ import fr.allagnat.casinomod.block.ModBlocks;
 import fr.allagnat.casinomod.block.entity.custom.RouletteBlockEntity;
 import fr.allagnat.casinomod.screen.ModScreenHandlers;
 import fr.allagnat.casinomod.util.ModTags;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,10 +14,26 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class RouletteScreenHandler extends ScreenHandler {
     private final Inventory inventory;
     private final BlockPos entityPos;
+    private final PlayerEntity player;
+
+    public int totalBet = 0;
+    public Map<String, ItemStack> betMap;
+    public String lastRoll = null;
+
+    public static Map<Integer, String> LOOKUP = new HashMap<>();
+    static {
+        for (int i = 0; i <= 36; i++) {
+            LOOKUP.put(i, "textures/gui/roulette/" + i + ".png");
+        }
+    }
 
     public RouletteScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
         this(syncId, playerInventory, playerInventory.player.getWorld().getBlockEntity(pos));
@@ -26,6 +43,9 @@ public class RouletteScreenHandler extends ScreenHandler {
         super(ModScreenHandlers.ROULETTE_SCREEN_HANDLER, syncId);
         this.inventory = (Inventory) blockEntity;
         this.entityPos = blockEntity.getPos();
+        this.player = playerInventory.player;
+
+        this.betMap = new HashMap<>();
 
         this.addSlot(new Slot(inventory, 0, 22, 26) {
             @Override
@@ -49,6 +69,14 @@ public class RouletteScreenHandler extends ScreenHandler {
         this.addSlot(new Slot(playerInventory, 6, 6 + 6 * 18 + 3, 143 ));
         this.addSlot(new Slot(playerInventory, 7, 6 + 7 * 18 + 4, 143 ));
         this.addSlot(new Slot(playerInventory, 8, 6 + 8 * 18 + 4, 143 ));
+    }
+
+    public BlockPos getEntityPos() {
+        return entityPos;
+    }
+
+    public PlayerEntity getPlayer() {
+        return player;
     }
 
     @Override
@@ -86,5 +114,19 @@ public class RouletteScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return player.getWorld().getBlockState(entityPos).isOf(ModBlocks.ROULETTE);
+    }
+
+    public boolean isRed(int n) {
+        return List.of(1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36).contains(n);
+    }
+
+    public void giveReward(String key, int multiplier) {
+        ItemStack mapEntry = betMap.get(key);
+        if (mapEntry == null || mapEntry == ItemStack.EMPTY) {
+            return;
+        }
+        ClientPlayNetworking.send(
+                new InventoryAddPayload(mapEntry, mapEntry.getCount() * multiplier)
+        );
     }
 }
