@@ -409,7 +409,7 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
 
         // Draw bet
         context.drawText(MinecraftClient.getInstance().textRenderer,
-                "bet: " + handler.currentBet, x + 7, y + 30, 0x555555, false
+                "bet: " + handler.currentBet + "$", x + 7, y + 30, 0x555555, false
         );
         if (handler.chipType == null) {
             context.drawText(MinecraftClient.getInstance().textRenderer,
