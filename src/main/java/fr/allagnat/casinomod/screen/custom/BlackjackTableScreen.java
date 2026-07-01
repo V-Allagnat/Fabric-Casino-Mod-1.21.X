@@ -417,7 +417,7 @@ public class BlackjackTableScreen extends HandledScreen<BlackjackTableScreenHand
             );
         } else {
             context.drawText(MinecraftClient.getInstance().textRenderer,
-                    "(" + handler.getBetValue(handler.chipType) + ")", x + 7, y + 40, 0x555555, false
+                    "(" + handler.getBetValue(handler.chipType) + "$)", x + 7, y + 40, 0x555555, false
             );
         }
 
